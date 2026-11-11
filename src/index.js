@@ -101,13 +101,29 @@ export class ContaShare {
   }
 
   async #request(pathOrUrl, accessToken) {
-    const url = pathOrUrl.startsWith('http') ? pathOrUrl : `${this.baseUrl}${pathOrUrl}`;
     // Without Accept: application/json, ContaShare redirects an unauthorised call to its login page instead of a 401.
-    const response = await this.fetch(url, {
+    // Redirects are never followed, so the token can't be carried to another site.
+    const response = await this.fetch(this.#apiUrl(pathOrUrl), {
       headers: { Accept: 'application/json', Authorization: `Bearer ${accessToken}` },
+      redirect: 'error',
     });
 
     return { status: response.status, body: await response.json().catch(() => null) };
+  }
+
+  /**
+   * A customer's token is only ever sent to ContaShare. A full URL, such as a webhook's resource_url, must be on the same
+   * site as baseUrl: a forged webhook could otherwise name an attacker's server and be handed the token.
+   */
+  #apiUrl(pathOrUrl) {
+    const base = new URL(`${this.baseUrl}/`);
+    const url = new URL(String(pathOrUrl), base);
+
+    if (url.origin !== base.origin) {
+      throw new TypeError(`Refusing to send a customer's token to ${url.origin}: it is not ${base.origin}.`);
+    }
+
+    return url.href;
   }
 
   async #token(fields) {
@@ -115,6 +131,7 @@ export class ContaShare {
       method: 'POST',
       headers: { Accept: 'application/json', 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({ client_id: this.clientId, client_secret: this.clientSecret, ...fields }),
+      redirect: 'error',
     });
 
     return this.#bodyOrThrow({ status: response.status, body: await response.json().catch(() => null) });

@@ -60,6 +60,8 @@ app.get('/auth/contashare/callback', async (req, res) => {
 - `authorizeUrl({ state, reconfirm: true })` shows the consent screen again, so the customer can share something new.
 - Tokens last a year. Call `refresh(refreshToken)` well before then and store the new pair straight away.
 - An error answer throws a `ContaShareError` with `status` and `body`.
+- A customer's token is only ever sent to ContaShare: `get()` refuses a full URL on any other site, and redirects are not
+  followed. Still check a webhook's signature before you act on it.
 
 ## Webhooks
 

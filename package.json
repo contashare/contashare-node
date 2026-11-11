@@ -1,6 +1,6 @@
 {
   "name": "contashare",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Sign in with ContaShare and read the details your customers share, plus a checker for ContaShare webhook signatures.",
   "keywords": [
     "contashare",

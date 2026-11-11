@@ -104,6 +104,28 @@ test('get follows a webhook resource_url as it is', async () => {
   assert.equal(calls[0].url, 'https://contashare.com/api/v1/address/address-1');
 });
 
+test('a customer token is never sent to another site, as a forged webhook could name one', async () => {
+  const { fetch, calls } = fakeFetch();
+  const contashare = client(fetch);
+
+  await assert.rejects(contashare.get('https://evil.example/api/v1/address/1', 'access-1'), TypeError);
+  await assert.rejects(contashare.get('//evil.example/api/v1/address/1', 'access-1'), TypeError);
+  await assert.rejects(contashare.get('https://contashare.com.evil.example/x', 'access-1'), TypeError);
+  await assert.rejects(contashare.get('http://contashare.com/api/v1/address/1', 'access-1'), TypeError);
+  assert.equal(calls.length, 0);
+});
+
+test('redirects are not followed', async () => {
+  const { fetch, calls } = fakeFetch([200, { id: 'x' }], [200, { access_token: 'a' }]);
+  const contashare = client(fetch);
+
+  await contashare.me('access-1');
+  await contashare.exchangeCode('code');
+
+  assert.equal(calls[0].redirect, 'error');
+  assert.equal(calls[1].redirect, 'error');
+});
+
 test('a base url points it at another ContaShare', () => {
   const contashare = new ContaShare({ clientId: 'c', clientSecret: 's', redirectUri: 'http://localhost/cb', baseUrl: 'http://localhost:8000/' });
 
