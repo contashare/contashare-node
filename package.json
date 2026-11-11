@@ -1,0 +1,23 @@
+{
+  "name": "contashare",
+  "version": "0.1.0",
+  "description": "Sign in with ContaShare and read the details your customers share, plus a checker for ContaShare webhook signatures.",
+  "keywords": ["contashare", "oauth", "sign in", "webhooks", "contact details"],
+  "homepage": "https://contashare.com/help/oauth",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "default": "./src/index.js"
+    }
+  },
+  "types": "./src/index.d.ts",
+  "files": ["src"],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test"
+  }
+}
