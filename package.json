@@ -2,8 +2,21 @@
   "name": "contashare",
   "version": "0.1.0",
   "description": "Sign in with ContaShare and read the details your customers share, plus a checker for ContaShare webhook signatures.",
-  "keywords": ["contashare", "oauth", "sign in", "webhooks", "contact details"],
+  "keywords": [
+    "contashare",
+    "oauth",
+    "sign in",
+    "webhooks",
+    "contact details"
+  ],
   "homepage": "https://contashare.com/help/oauth",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/contashare/contashare-node.git"
+  },
+  "bugs": {
+    "url": "https://github.com/contashare/contashare-node/issues"
+  },
   "license": "MIT",
   "type": "module",
   "exports": {
@@ -13,7 +26,9 @@
     }
   },
   "types": "./src/index.d.ts",
-  "files": ["src"],
+  "files": [
+    "src"
+  ],
   "engines": {
     "node": ">=18"
   },
